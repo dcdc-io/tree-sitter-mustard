@@ -1,0 +1,196 @@
+===
+let array
+===
+
+let cheeses = ["cheddar", "brie", "halloumi"]
+
+---
+
+(document
+  (statement
+    (letdecl
+      ident: (ident)
+      value: (array
+        (string
+          (string_content))
+        (string
+          (string_content))
+        (string
+          (string_content))
+      )
+    )
+  )
+)
+
+===
+let with object comprehension
+===
+
+let o = { [key]: {val} for key, val in someObject };
+
+---
+
+(document
+  (statement
+    (letdecl
+      (ident)
+      (object
+        (pairComp
+          (key
+            (ident))
+          (object
+            (pair
+              (key
+                (ident))))
+          (ident)
+          (ident)
+          (ident)
+        )
+      )
+    )
+  )
+)
+
+===
+type with object comprehension
+===
+
+type schedule = {
+    [day]: {
+        tasks: getTasks()
+    } for day in weekday
+}
+
+---
+
+(document
+  (statement
+    (typedef
+      name: (ident)
+      definition: (object
+        (pairComp
+          (key
+            name: (ident))
+          value: (object
+            (pair
+              (key
+                name: (ident))
+              value: (funccall
+                (ident))))
+          keyAs: (ident)
+          in: (ident)
+        )
+      )
+    )
+  )
+)
+
+===
+let object in an object
+===
+
+let x = {}
+let x = { o: {}, j: {} }
+let x = { x: { x: { a?, +b, -c } } }
+
+---
+
+(document
+  (statement
+    (letdecl
+      (ident)
+      (object)))
+  (statement
+    (letdecl
+      (ident)
+      (object
+        (pair
+          (key
+            (ident))
+          (object))
+        (pair
+          (key
+            (ident))
+          (object)))))
+  (statement
+    (letdecl
+      (ident)
+      (object
+        (pair
+          (key
+            (ident))
+          (object
+            (pair
+              (key
+                (ident))
+              (object
+                (pair
+                  (key
+                    (ident)))
+                (pair
+                  (key
+                    (ident)))
+                (pair
+                  (key
+                    (ident))))))))))
+)
+
+===
+let with comprehension to key
+===
+
+let y = {
+  a: { [key]: {val} for key, val in someObject }
+}
+
+---
+
+(document
+  (statement
+    (letdecl
+      ident: (ident)
+      value: (object
+        (pair
+          (key
+            name: (ident))
+          value: (object
+            (pairComp
+              (key
+                name: (ident))
+              value: (object
+                (pair
+                  (key
+                    name: (ident))))
+              keyAs: (ident)
+              valueAs: (ident)
+              in: (ident))))))))
+
+===
+let with comprehension spread
+===
+
+let y = { ...{ [key]: val for key, val in someObject } }
+
+---
+
+(document
+  (statement
+    (letdecl
+      ident: (ident)
+      value: (object
+        (spread
+          (object
+            (pairComp
+              (key
+                name: (ident))
+              value: (ident)
+              keyAs: (ident)
+              valueAs: (ident)
+              in: (ident)
+            )
+          )
+        )
+      )
+    )
+  )
+)
