@@ -1,27 +1,29 @@
-import release, pipeline, stage, job from "gitlab-ci.mstd"
+import pipeline, job from "gitlab-ci.mstd"
 
-let test = {
+job unit_test = {
     script: "
         npm ci
         npm run test
     "
 }
 
-let build = {
-    script: "
-        npm run build
-    "
+job npm_build = {
+    script: "npm run build"
 }
 
-let publish = {
-    script: "
-        npm publish
-    ",
-    release,
+job npm_publish = {
+    script: "npm publish",
+    release
 }
 
-pipeline(
-    job(test),
-    job(build),
-    job(release),
-)
+pipeline main = {
+    testing: {
+        unit_test
+    }
+    building: {
+        npm_build
+    }
+    publishing: {
+        npm_publish
+    }
+}

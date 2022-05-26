@@ -1,0 +1,18 @@
+export let job = (value object) -> {
+    script: `nothing to do in job ${nameof(value)}`,
+    ...value
+}
+
+export let pipeline = (value object) (string -> object) -> {
+    stages: [key for key, _ in value],
+    ...{
+        [key]: checkJob(job) for key, job in value
+    }
+}
+
+let checkJob = fn(job) {
+    let job_ok = {
+        script?(scriptlike else "job script is the wrong type")
+    }
+    return job_ok + job
+}
