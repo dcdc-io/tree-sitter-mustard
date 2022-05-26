@@ -389,8 +389,76 @@ let names = ["foo" for i in range(10)]
 array comp with template string key
 ===
 
-let names = [`foo${i}` for i in range(10)]
+let names = [`abc${i}def` for i in range(10)]
 
 ---
 
-(document)
+(document
+  (statement
+    (declaration_statement
+      (let_declaration
+        (ident
+          (ident_word))
+        (expression
+          (arrayComp
+            (expression
+              (template_string
+                (template_substitution
+                  (expression
+                    (ident
+                      (ident_word))))))
+            (ident_word)
+            (expression
+              (call_expression
+                (ident
+                  (ident_word))
+                (tuple
+                  (expression
+                    (number)))))))))))
+
+===
+add two objects together
+===
+
+{} + {}
+
+---
+
+(document
+  (statement
+    (expression
+    (binary_expression
+      (expression
+        (object))
+      (expression
+        (object))))))
+
+===
+let a = object plus object
+===
+
+let a = {} + {} + ({} + {})
+
+---
+(document
+  (statement
+    (declaration_statement
+      (let_declaration
+        (ident
+          (ident_word))
+        (expression
+          (binary_expression
+            (expression
+              (binary_expression
+                (expression
+                  (object))
+                (expression
+                  (object))))
+            (expression
+              (tuple
+                (expression
+                  (binary_expression
+                    (expression
+                      (object))
+                    (expression
+                      (object))))))))))))
