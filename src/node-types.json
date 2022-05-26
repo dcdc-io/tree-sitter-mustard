@@ -269,6 +269,10 @@
           "named": true
         },
         {
+          "type": "let_element_declaration",
+          "named": true
+        },
+        {
           "type": "rule_declaration",
           "named": true
         },
@@ -387,7 +391,7 @@
             "named": false
           },
           {
-            "type": "ident",
+            "type": "ident_word",
             "named": true
           }
         ]
@@ -524,6 +528,52 @@
         "types": [
           {
             "type": "ident",
+            "named": true
+          }
+        ]
+      },
+      "value": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "let_element_declaration",
+    "named": true,
+    "fields": {
+      "element": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "ident_word",
+            "named": true
+          }
+        ]
+      },
+      "export": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "export",
+            "named": false
+          }
+        ]
+      },
+      "ident": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "ident_word",
             "named": true
           }
         ]

@@ -19,11 +19,11 @@ job npm_publish = {
 pipeline main = {
     testing: {
         unit_test
-    }
+    },
     building: {
         npm_build
-    }
+    },
     publishing: {
         npm_publish
-    }
+    },
 }

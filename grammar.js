@@ -66,11 +66,12 @@ module.exports = grammar({
             $.type_declaration,
             $.rule_declaration,
             $.let_declaration,
+            $.let_element_declaration
         ),
 
         import_declaration: $ => seq(
             field("direction", choice("import", "export")),
-            field("names", commaSep($.ident)), "from", field("ref", $.string)
+            field("names", commaSep($.ident_word)), "from", field("ref", $.string)
         ),
 
         type_declaration: $ => seq(
@@ -87,7 +88,18 @@ module.exports = grammar({
             field("type", $.key_specification_expression)
         ),
 
-        let_declaration: $ => seq(
+        let_element_declaration: $ => prec(2, seq(
+            // TODO: do you need to make this a field?
+            optional(field("export", "export")),
+            field("element", $.ident_word),
+            field("ident", $.ident_word),
+            optional(seq(
+                "=",
+                field("value", $.expression)
+            ))
+        )),
+
+        let_declaration: $ => prec(3, seq(
             optional(field("export", "export")),
             "let",
             field("ident", $.ident),
@@ -95,7 +107,7 @@ module.exports = grammar({
                 "=",
                 field("value", $.expression)
             ))
-        ),
+        )),
 
         expression: $ => choice(
             $.binary_expression,

@@ -462,3 +462,107 @@ let a = {} + {} + ({} + {})
                       (object))
                     (expression
                       (object))))))))))))
+
+===
+import some things
+===
+
+import pipeline, job from "gitlab-ci.mtsd"
+
+---
+
+(document
+  (statement
+    (declaration_statement
+      (import_declaration
+        (ident_word)
+        (ident_word)
+        (string
+          (string_content))))))
+
+===
+declare an element
+===
+
+job unit_test = {
+  script: "
+    npm ci
+    npm run test
+  "
+}
+
+job npm_build = {
+    script: "npm run build"
+}
+
+job npm_publish = {
+    script: "npm publish",
+    release
+}
+
+---
+
+(document
+  (statement
+    (declaration_statement
+      (let_element_declaration
+        (ident_word)
+        (ident_word)
+        (expression
+          (object
+            (pair
+              (key
+                (ident
+                  (ident_word)))
+              (string
+              (string_content))))))))
+      (statement
+        (declaration_statement
+          (let_element_declaration
+            (ident_word)
+            (ident_word)
+            (expression
+              (object
+                (pair
+                  (key
+                    (ident
+                      (ident_word)))
+                  (string
+                    (string_content))))))))
+      (statement
+        (declaration_statement
+          (let_element_declaration
+            (ident_word)
+            (ident_word)
+            (expression
+              (object
+                (pair
+                  (key
+                    (ident
+                      (ident_word)))
+                  (string
+                    (string_content)))
+                (pair
+                  (key
+                    (ident
+                      (ident_word))))))))))
+
+===
+declare an element sloppy
+===
+
+pipeline main = {
+    testing: {
+        unit_test
+    },
+    building: {
+        npm_build
+    },
+    publishing: {
+        npm_publish
+    }
+}
+
+---
+
+(document)
