@@ -38,6 +38,12 @@ module.exports = grammar({
         ],
         [
             $.array, $.arrayComp
+        ],
+        [
+            $.call_expression,
+            $.binary_expression,
+            $.value_literal,
+            $.ident
         ]
         // ['assign', $.primary_expression],
         // ['member', 'new', 'call', $.expression],
@@ -91,12 +97,12 @@ module.exports = grammar({
             ))
         ),
 
-        expression: $ => prec(2, choice(
+        expression: $ => choice(
             $.binary_expression,
             $.call_expression,
             $.value_literal,
             $.ident,
-        )),
+        ),
 
         value_literal: $ => choice(
             $.tuple,
@@ -113,7 +119,7 @@ module.exports = grammar({
 
         tuple: $ => seq("(", commaSep($.expression), ")"),
 
-        call_expression: $ => prec(1, seq(
+        call_expression: $ => prec(19, seq(
             $.ident, $.tuple
         )),
 
@@ -201,7 +207,7 @@ module.exports = grammar({
         ),
 
         string_content: $ => repeat1(choice(
-            token.immediate(prec(1, /[^\\"\n]+/)),
+            token.immediate(prec(1, /[^\\"]+/)),
             $.escape_sequence
         )),
 

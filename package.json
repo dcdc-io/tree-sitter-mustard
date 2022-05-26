@@ -19,7 +19,7 @@
     {
       "scope": "source.ms",
       "file-types": [
-        "ms"
+        "ms", "mstd"
       ],
       "highlights": [
         "queries/highlights.scm"

@@ -1,0 +1,27 @@
+import release, pipeline, stage, job from "gitlab-ci.mstd"
+
+let test = {
+    script: "
+        npm ci
+        npm run test
+    "
+}
+
+let build = {
+    script: "
+        npm run build
+    "
+}
+
+let publish = {
+    script: "
+        npm publish
+    ",
+    release,
+}
+
+pipeline(
+    job(test),
+    job(build),
+    job(release),
+)
