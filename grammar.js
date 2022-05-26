@@ -6,73 +6,148 @@ module.exports = grammar({
         $.comment,
     ],
 
+    externals: $ => [
+        $._template_chars
+    ],
+
     supertypes: $ => [
-        $._value
+        $.value_literal
+    ],
+
+    precedences: $ => [
+        [
+            'member',
+            'call',
+            $.update_expression,
+            'unary_void',
+            'binary_exp',
+            'binary_times',
+            'binary_plus',
+            'binary_shift',
+            'binary_compare',
+            'binary_relation',
+            'binary_equality',
+            'bitwise_and',
+            'bitwise_xor',
+            'bitwise_or',
+            'logical_and',
+            'logical_or',
+            'ternary',
+            $.sequence_expression,
+            $.arrow_function
+        ],
+        [
+            $.array, $.arrayComp
+        ]
+        // ['assign', $.primary_expression],
+        // ['member', 'new', 'call', $.expression],
+        // ['declaration', 'literal'],
+        // [$.primary_expression, $.statement_block, 'object'],
+        // [$.import_statement, $.import],
+        // [$.export_statement, $.primary_expression],
     ],
 
     rules: {
-        document: $ => repeat($.statement),
+        document: $ => seq($.statement, repeat($.statement)),
 
         statement: $ => seq(choice(
-            $._value,
             $.expression,
-            $.ruledecl,
-            $.letdecl,
-            $.importdecl,
-            $.typedef,
+            $.declaration_statement,
         ), optional(";")),
 
-        _value: $ => choice(
-            $.funccall,
+        declaration_statement: $ => choice(
+            $.import_declaration,
+            $.type_declaration,
+            $.rule_declaration,
+            $.let_declaration,
+        ),
+
+        import_declaration: $ => seq(
+            field("direction", choice("import", "export")),
+            field("names", commaSep($.ident)), "from", field("ref", $.string)
+        ),
+
+        type_declaration: $ => seq(
+            optional(field("export", "export")),
+            "type", field("name", $.ident), "=",
+            field("definition", pipeSep1(choice($.value_literal, $.ident)))
+        ),
+
+        rule_declaration: $ => seq(
+            optional(field("export", "export")),
+            "rule",
+            field("ident", $.ident),
+            "=",
+            field("type", $.key_specification_expression)
+        ),
+
+        let_declaration: $ => seq(
+            optional(field("export", "export")),
+            "let",
+            field("ident", $.ident),
+            optional(seq(
+                "=",
+                field("value", $.expression)
+            ))
+        ),
+
+        expression: $ => prec(2, choice(
+            $.binary_expression,
+            $.call_expression,
+            $.value_literal,
+            $.ident,
+        )),
+
+        value_literal: $ => choice(
+            $.tuple,
             $.object,
             $.array,
+            $.arrayComp,
             $.number,
             $.string,
+            $.template_string,
             $.true,
             $.false,
             $.null,
         ),
 
-        funccall: $ => seq(
-            $.ident, "(", commaSep($._value), ")"
-        ),
+        tuple: $ => seq("(", commaSep($.expression), ")"),
+
+        call_expression: $ => prec(1, seq(
+            $.ident, $.tuple
+        )),
 
         object: $ => seq(
-            "{", commaSep(choice($.pairComp, $.pair, $.spreadStar, $.spread)), "}"
-        ),
-
-        expression: $ => seq(
-            choice($.ident, $._value)
+            "{", commaSep(choice($.pairComp, $.pair, $.spread)), "}"
         ),
 
         pairComp: $ => seq(
             "[", $.key, "]",
-            ":", 
+            ":",
             field("value", $.expression),
-            "for", 
-            field("keyAs", $.ident),
-            optional(seq(",", field("valueAs", $.ident))),
-            "in", field("in", choice($.ident, $._value))
+            "for",
+            field("keyAs", $.ident_word),
+            optional(seq(",", field("valueAs", $.ident_word))),
+            "in", field("in", choice($.ident, $.value_literal))
         ),
 
         arrayComp: $ => seq(
+            "[",
             field("value", $.expression),
             "for",
-            field("valueAs", $.ident),
-            "in", field("in", choice($.ident, $._value))
+            field("valueAs", $.ident_word),
+            "in",
+            field("in", choice($.expression)),
+            "]"
         ),
 
-        spreadStar: $ => seq(
-            "...*"
-        ),
-
-        spread: $ => seq(
-            "...", choice($._value, $.ident)
-        ),
+        spread: $ => prec(1, seq(
+            "...", choice("*", $.expression, $.ident)
+        )),
 
         key: $ => seq(
             optional(field("prefix", choice("++", "--", "+", "-"))),
-            field("name", dotSep1(choice($.string, $.number, $.ident))),
+            field("name", dotSep1(choice($.string, $.ident))),
             optional(field("postfix", choice("!", "?")))
         ),
 
@@ -80,29 +155,44 @@ module.exports = grammar({
             $.key,
             optional(seq(
                 "(",
-                $.keytype,
+                $.key_specification_expression,
                 ")"
             )),
             optional(seq(
                 ":",
-                field("value", $._value)
+                field("value", $.value_literal)
             ))
         ),
 
-        ident: $ => seq(/[a-zA-Z_][a-zA-Z0-9_]*/),
+        ident_word: $ => seq(/[a-zA-Z_][a-zA-Z0-9_]*/),
 
-        comparisonOperator: $ => choice(
-            "<", ">"
+        ident: $ => dotSep1($.ident_word),
+
+        comparison_operator: $ => choice(
+            "<=",
+            ">=",
+            "<",
+            ">",
+            "!=",
+            "==",
+            "in",
+            "contains"
         ),
 
-        keytype: $ => seq(
+        key_specification_expression: $ => seq(
             field("type", $.ident),
-            optional(seq($.comparisonOperator, $._value)),
-            optional(seq("else", field("rescue", $._value)))
+            optional(ruleSep1(
+                seq($.comparison_operator, $.value_literal), choice("and", "or")
+            )),
+            optional(seq("else", field("rescue", $.value_literal)))
         ),
 
         array: $ => seq(
-            "[", commaSep(choice($._value, $.arrayComp, $.spreadStar)), "]"
+            "[", commaSep(
+                choice(
+                    $.expression,
+                    $.spread)
+            ), "]"
         ),
 
         string: $ => choice(
@@ -171,31 +261,112 @@ module.exports = grammar({
             )
         )),
 
-        ruledecl: $ => seq(
-            optional(field("export", "export")),
-            "rule", field("ident", $.ident), "=", field("type", $.keytype)
+        // expressions
+        binary_expression: $ => choice(
+            ...[
+                ['&&', 'logical_and'],
+                ['||', 'logical_or'],
+                ['>>', 'binary_shift'],
+                ['>>>', 'binary_shift'],
+                ['<<', 'binary_shift'],
+                ['&', 'bitwise_and'],
+                ['^', 'bitwise_xor'],
+                ['|', 'bitwise_or'],
+                ['+', 'binary_plus'],
+                ['-', 'binary_plus'],
+                ['*', 'binary_times'],
+                ['/', 'binary_times'],
+                ['%', 'binary_times'],
+                ['**', 'binary_exp'],
+                ['<', 'binary_relation'],
+                ['<=', 'binary_relation'],
+                ['==', 'binary_equality'],
+                ['!=', 'binary_equality'],
+                ['>=', 'binary_relation'],
+                ['>', 'binary_relation'],
+                ['??', 'ternary'],
+                ['is', 'binary_relation'],
+                ['in', 'binary_relation'],
+                ['contains', 'binary_relation'],
+            ].map(([operator, precedence]) =>
+                prec.left(precedence, seq(
+                    field('left', $.expression),
+                    field('operator', operator),
+                    field('right', $.expression)
+                ))
+            )
         ),
 
-        letdecl: $ => seq(
-            optional(field("export", "export")),
-            "let", field("ident", $.ident), optional(seq("=", field("value", $._value)))
+        update_expression: $ => prec.left(choice(
+            seq(
+                field('argument', $.expression),
+                field('operator', choice('++', '--'))
+            ),
+            seq(
+                field('operator', choice('++', '--')),
+                field('argument', $.expression)
+            ),
+        )),
+
+        sequence_expression: $ => seq(
+            field('left', $.expression),
+            ',',
+            field('right', choice($.sequence_expression, $.expression))
         ),
 
-        importdecl: $ => seq(
-            field("direction", choice("import", "export")),
-            field("names", commaSep($.ident)), "from", field("ref", $.string)
+        arrow_function: $ => seq(
+            optional('async'),
+            field('parameters', $.formal_parameters),
+            '=>',
+            field('body', choice(
+                $.expression,
+                seq("{", $.document, "}")
+            ))
         ),
 
-        typedef: $ => seq(
-            optional(field("export", "export")),
-            "type", field("name", $.ident), "=",
-            field("definition", pipeSep1($._value))
-        )
+        formal_parameters: $ => seq(
+            '(',
+            optional(seq(
+                commaSep1(seq(
+                    $.ident_word,
+                    optional(seq("(", $.key_specification_expression, ")"))
+                )),
+                optional(',')
+            )),
+            ')'
+        ),
+
+        template_string: $ => seq(
+            '`',
+            repeat(choice(
+                $._template_chars,
+                $.escape_sequence,
+                $.template_substitution
+            )),
+            '`'
+        ),
+
+        template_substitution: $ => seq(
+            '${',
+            $.expression,
+            '}'
+        ),
+
+        escape_sequence: $ => token.immediate(seq(
+            '\\',
+            choice(
+              /[^xu0-7]/,
+              /[0-7]{1,3}/,
+              /x[0-9a-fA-F]{2}/,
+              /u[0-9a-fA-F]{4}/,
+              /u{[0-9a-fA-F]+}/
+            )
+          )),
     }
 });
 
 function dotSep1(rule) {
-    return seq(rule, repeat(seq(".", rule)))
+    return prec.left(seq(rule, repeat(seq(".", rule))))
 }
 
 function commaSep1(rule) {
@@ -208,4 +379,8 @@ function commaSep(rule) {
 
 function pipeSep1(rule) {
     return seq(rule, repeat(seq("|", rule)))
+}
+
+function ruleSep1(rule, sep) {
+    return seq(rule, repeat(seq(sep, rule)))
 }

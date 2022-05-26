@@ -1,4 +1,43 @@
 ===
+let a
+===
+
+let a
+
+---
+
+(document
+  (statement
+    (declaration_statement
+      (let_declaration
+        ident: (ident
+          (ident_word)))))
+)
+
+===
+let a = b + 1
+===
+
+let a = b + 1
+
+---
+
+(document
+  (statement
+    (declaration_statement
+      (let_declaration
+        ident: (ident
+          (ident_word))
+        value: (expression
+          (binary_expression
+            left: (expression
+              (ident
+                (ident_word)))
+            right: (expression
+              (number)))))))
+)
+
+===
 let array
 ===
 
@@ -6,21 +45,23 @@ let cheeses = ["cheddar", "brie", "halloumi"]
 
 ---
 
-(document
-  (statement
-    (letdecl
-      ident: (ident)
-      value: (array
-        (string
-          (string_content))
-        (string
-          (string_content))
-        (string
-          (string_content))
-      )
-    )
-  )
-)
+  (document
+      (statement
+        (declaration_statement
+          (let_declaration
+            (ident
+              (ident_word))
+            (expression
+              (array
+                (expression
+                  (string
+                    (string_content)))
+                (expression
+                  (string
+                    (string_content)))
+                (expression
+                  (string
+                    (string_content)))))))))
 
 ===
 let with object comprehension
@@ -30,26 +71,28 @@ let o = { [key]: {val} for key, val in someObject };
 
 ---
 
-(document
-  (statement
-    (letdecl
-      (ident)
-      (object
-        (pairComp
-          (key
-            (ident))
-          (object
-            (pair
-              (key
-                (ident))))
-          (ident)
-          (ident)
-          (ident)
-        )
-      )
-    )
-  )
-)
+    (document
+      (statement
+        (declaration_statement
+          (let_declaration
+            (ident
+              (ident_word))
+            (expression
+              (object
+                (pairComp
+                  (key
+                    (ident
+                      (ident_word)))
+                  (expression
+                    (object
+                      (pair
+                        (key
+                          (ident
+                            (ident_word))))))
+                  (ident_word)
+                  (ident_word)
+                  (ident
+                    (ident_word)))))))))
 
 ===
 type with object comprehension
@@ -63,27 +106,29 @@ type schedule = {
 
 ---
 
-(document
-  (statement
-    (typedef
-      name: (ident)
-      definition: (object
-        (pairComp
-          (key
-            name: (ident))
-          value: (object
-            (pair
-              (key
-                name: (ident))
-              value: (funccall
-                (ident))))
-          keyAs: (ident)
-          in: (ident)
-        )
-      )
-    )
-  )
-)
+    (document
+      (statement
+        (declaration_statement
+          (type_declaration
+            (ident
+              (ident_word))
+            (object
+              (pairComp
+                (key
+                  (ident
+                    (ident_word)))
+                (expression
+                  (object
+                    (pair
+                      (key
+                        (ident
+                          (ident_word)))
+                      (ERROR
+                        (UNEXPECTED 'g'))
+                      (tuple))))
+                (ident_word)
+                (ident
+                  (ident_word))))))))
 
 ===
 let object in an object
@@ -95,45 +140,60 @@ let x = { x: { x: { a?, +b, -c } } }
 
 ---
 
-(document
-  (statement
-    (letdecl
-      (ident)
-      (object)))
-  (statement
-    (letdecl
-      (ident)
-      (object
-        (pair
-          (key
-            (ident))
-          (object))
-        (pair
-          (key
-            (ident))
-          (object)))))
-  (statement
-    (letdecl
-      (ident)
-      (object
-        (pair
-          (key
-            (ident))
-          (object
-            (pair
-              (key
-                (ident))
+ (document
+      (statement
+        (declaration_statement
+          (let_declaration
+            (ident
+              (ident_word))
+            (expression
+              (object)))))
+      (statement
+        (declaration_statement
+          (let_declaration
+            (ident
+              (ident_word))
+            (expression
               (object
                 (pair
                   (key
-                    (ident)))
+                    (ident
+                      (ident_word)))
+                  (object))
                 (pair
                   (key
-                    (ident)))
-                (pair
-                  (key
-                    (ident))))))))))
-)
+                    (ident
+                      (ident_word)))
+                  (object)))))))
+      (statement
+        (declaration_statement
+          (let_declaration
+            (ident
+              (ident_word))
+            (expression
+            (object
+              (pair
+                (key
+                  (ident
+                    (ident_word)))
+                (object
+                  (pair
+                    (key
+                      (ident
+                        (ident_word)))
+                    (object
+                      (pair
+                        (key
+                          (ident
+                            (ident_word))))
+                      (pair
+                        (key
+                          (ident
+                            (ident_word))))
+                      (pair
+                        (key
+                          (ident
+                            (ident_word))))))))))))))
 
 ===
 let with comprehension to key
@@ -145,25 +205,33 @@ let y = {
 
 ---
 
-(document
-  (statement
-    (letdecl
-      ident: (ident)
-      value: (object
-        (pair
-          (key
-            name: (ident))
-          value: (object
-            (pairComp
-              (key
-                name: (ident))
-              value: (object
+  (document
+      (statement
+        (declaration_statement
+          (let_declaration
+            (ident
+              (ident_word))
+            (expression
+              (object
                 (pair
                   (key
-                    name: (ident))))
-              keyAs: (ident)
-              valueAs: (ident)
-              in: (ident))))))))
+                    (ident
+                      (ident_word)))
+                  (object
+                    (pairComp
+                      (key
+                        (ident
+                          (ident_word)))
+                      (expression
+                        (object
+                          (pair
+                            (key
+                              (ident
+                                (ident_word))))))
+                      (ident_word)
+                      (ident_word)
+                      (ident
+                        (ident_word)))))))))))
 
 ===
 let with comprehension spread
@@ -173,24 +241,156 @@ let y = { ...{ [key]: val for key, val in someObject } }
 
 ---
 
+ (document
+      (statement
+        (declaration_statement
+          (let_declaration
+            (ident
+              (ident_word))
+            (expression
+              (object
+                (spread
+                  (expression
+                    (object
+                      (pairComp
+                        (key
+                          (ident
+                            (ident_word)))
+                        (expression
+                          (ident
+                            (ident_word)))
+                        (ident_word)
+                        (ident_word)
+                        (ident
+                          (ident_word)))))))))))
+)
+
+===
+let with array comprehension
+===
+
+let a = [x for x in list]
+
+---
+
 (document
   (statement
-    (letdecl
-      ident: (ident)
-      value: (object
-        (spread
-          (object
-            (pairComp
-              (key
-                name: (ident))
-              value: (ident)
-              keyAs: (ident)
-              valueAs: (ident)
-              in: (ident)
-            )
-          )
-        )
+    (declaration_statement
+    (let_declaration
+      ident: (ident
+        (ident_word))
+      value: (expression
+        (arrayComp
+          value: (expression
+            (ident
+              (ident_word)))
+            valueAs: (ident_word)
+            in: (expression
+              (ident
+                (ident_word)))))
       )
     )
   )
 )
+
+===
+let expression with array comprehension
+===
+
+let a = [x + 1 + 1 for x in list]
+
+---
+
+(document
+  (statement
+    (declaration_statement
+    (let_declaration
+      ident: (ident
+        (ident_word))
+      value: (expression
+                (arrayComp
+                  value: (expression
+                    (binary_expression
+                      left: (expression
+                        (binary_expression
+                          left: (expression
+                            (ident
+                              (ident_word)))
+                          right: (expression
+                            (number))))
+                      right: (expression
+                        (number))))
+                  valueAs: (ident_word)
+                  in: (expression
+                    (ident
+                      (ident_word))))))
+    )
+  )
+)
+
+===
+array comp with proper key
+===
+
+let names = [i for i in range(10)]
+
+---
+
+(document
+  (statement
+    (declaration_statement
+      (let_declaration
+        ident: (ident
+          (ident_word))
+        value: (expression
+          (arrayComp
+            value: (expression
+              (ident
+                (ident_word)))
+            valueAs: (ident_word)
+              in: (expression
+                (call_expression
+                  (ident
+                    (ident_word))
+                  (tuple
+                    (expression
+                      (number)))))))))))
+
+
+===
+array comp with string key
+===
+
+let names = ["foo" for i in range(10)]
+
+---
+
+(document
+  (statement
+    (declaration_statement
+      (let_declaration
+        (ident
+          (ident_word))
+        (expression
+          (arrayComp
+            (expression
+              (string
+                (string_content)))
+            (ident_word)
+            (expression
+              (call_expression
+                (ident
+                  (ident_word))
+                (tuple
+                  (expression
+                    (number)))))))))))
+
+===
+array comp with template string key
+===
+
+let names = [`foo${i}` for i in range(10)]
+
+---
+
+(document)
