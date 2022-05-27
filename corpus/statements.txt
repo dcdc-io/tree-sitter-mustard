@@ -560,9 +560,43 @@ pipeline main = {
     },
     publishing: {
         npm_publish
-    }
+    },
 }
 
 ---
 
-(document)
+(document
+  (statement
+    (declaration_statement
+      (let_element_declaration
+        (ident_word)
+        (ident_word)
+        (expression
+          (object
+            (pair
+              (key
+                (ident
+                  (ident_word)))
+              (object
+                (pair
+                  (key
+                    (ident
+                      (ident_word))))))
+            (pair
+              (key
+                (ident
+                  (ident_word)))
+              (object
+                (pair
+                  (key
+                    (ident
+                      (ident_word))))))
+            (pair
+              (key
+                (ident
+                  (ident_word)))
+              (object
+                (pair
+                  (key
+                    (ident
+                      (ident_word))))))))))))

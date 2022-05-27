@@ -117,6 +117,7 @@ module.exports = grammar({
         ),
 
         value_literal: $ => choice(
+            $.thin_arrow_literal,
             $.tuple,
             $.object,
             $.array,
@@ -129,6 +130,12 @@ module.exports = grammar({
             $.null,
         ),
 
+        thin_arrow_literal: $ => seq(
+            $.formal_parameters,
+            "->",
+            $.object
+        ),
+
         tuple: $ => seq("(", commaSep($.expression), ")"),
 
         call_expression: $ => prec(19, seq(
@@ -136,7 +143,7 @@ module.exports = grammar({
         )),
 
         object: $ => seq(
-            "{", commaSep(choice($.pairComp, $.pair, $.spread)), "}"
+            "{", commaSep(choice($.pairComp, $.pair, $.spread)), optional(","), "}"
         ),
 
         pairComp: $ => seq(
