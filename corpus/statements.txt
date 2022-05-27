@@ -600,3 +600,42 @@ pipeline main = {
                   (key
                     (ident
                       (ident_word))))))))))))
+
+===
+thin arrow let
+===
+
+export let job = (name -> value object) -> {
+    script: `nothing to do in job ${name}`,
+    ...value
+}
+
+---
+
+(document
+  (statement
+    (declaration_statement
+      (let_declaration
+        (ident
+          (ident_word))
+        (expression
+          (thin_arrow_literal
+            (formal_parameters
+              (ident_word)
+              (ident_word)
+              (key_specification_expression
+                (ident
+                  (ident_word))))
+            (object
+              (pair
+                (key
+                  (ident
+                    (ident_word)))
+                (template_string
+                  (template_substitution
+                    (expression
+                      (ident
+                        (ident_word))))))
+              (spread
+                (ident
+                  (ident_word))))))))))

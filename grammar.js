@@ -353,8 +353,16 @@ module.exports = grammar({
             '(',
             optional(seq(
                 commaSep1(seq(
-                    $.ident_word,
-                    optional(seq("(", $.key_specification_expression, ")"))
+                    choice(
+                        seq($.ident_word, "->", $.ident_word),
+                        $.ident_word,
+                    ),
+                    optional(
+                        choice(
+                            $.key_specification_expression,
+                            seq("(", $.key_specification_expression, ")")
+                        )
+                    )
                 )),
                 optional(',')
             )),

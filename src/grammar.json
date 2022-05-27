@@ -2733,26 +2733,57 @@
                       "type": "SEQ",
                       "members": [
                         {
-                          "type": "SYMBOL",
-                          "name": "ident_word"
-                        },
-                        {
                           "type": "CHOICE",
                           "members": [
                             {
                               "type": "SEQ",
                               "members": [
                                 {
-                                  "type": "STRING",
-                                  "value": "("
+                                  "type": "SYMBOL",
+                                  "name": "ident_word"
                                 },
+                                {
+                                  "type": "STRING",
+                                  "value": "->"
+                                },
+                                {
+                                  "type": "SYMBOL",
+                                  "name": "ident_word"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "SYMBOL",
+                              "name": "ident_word"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "CHOICE",
+                          "members": [
+                            {
+                              "type": "CHOICE",
+                              "members": [
                                 {
                                   "type": "SYMBOL",
                                   "name": "key_specification_expression"
                                 },
                                 {
-                                  "type": "STRING",
-                                  "value": ")"
+                                  "type": "SEQ",
+                                  "members": [
+                                    {
+                                      "type": "STRING",
+                                      "value": "("
+                                    },
+                                    {
+                                      "type": "SYMBOL",
+                                      "name": "key_specification_expression"
+                                    },
+                                    {
+                                      "type": "STRING",
+                                      "value": ")"
+                                    }
+                                  ]
                                 }
                               ]
                             },
@@ -2776,26 +2807,57 @@
                             "type": "SEQ",
                             "members": [
                               {
-                                "type": "SYMBOL",
-                                "name": "ident_word"
-                              },
-                              {
                                 "type": "CHOICE",
                                 "members": [
                                   {
                                     "type": "SEQ",
                                     "members": [
                                       {
-                                        "type": "STRING",
-                                        "value": "("
+                                        "type": "SYMBOL",
+                                        "name": "ident_word"
                                       },
+                                      {
+                                        "type": "STRING",
+                                        "value": "->"
+                                      },
+                                      {
+                                        "type": "SYMBOL",
+                                        "name": "ident_word"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "SYMBOL",
+                                    "name": "ident_word"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "CHOICE",
+                                "members": [
+                                  {
+                                    "type": "CHOICE",
+                                    "members": [
                                       {
                                         "type": "SYMBOL",
                                         "name": "key_specification_expression"
                                       },
                                       {
-                                        "type": "STRING",
-                                        "value": ")"
+                                        "type": "SEQ",
+                                        "members": [
+                                          {
+                                            "type": "STRING",
+                                            "value": "("
+                                          },
+                                          {
+                                            "type": "SYMBOL",
+                                            "name": "key_specification_expression"
+                                          },
+                                          {
+                                            "type": "STRING",
+                                            "value": ")"
+                                          }
+                                        ]
                                       }
                                     ]
                                   },
